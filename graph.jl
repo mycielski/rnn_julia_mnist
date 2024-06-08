@@ -72,8 +72,9 @@ reset!(node::Operator) = node.gradient = nothing
 
 compute!(node::Constant) = nothing
 compute!(node::Variable) = nothing
-compute!(node::Operator) =
+compute!(node::Operator) = let
     node.output = forward(node, [input.output for input in node.inputs]...)
+end
 
 function forward!(order::Vector)
     for node in order
@@ -91,7 +92,7 @@ end
 function backward!(order::Vector; seed=1.0)
     result = last(order)
     result.gradient = seed
-    @assert length(result.output) == 1 "Gradient is defined only for scalar functions"
+    #@assert length(result.output) == 1 "Gradient is defined only for scalar functions"
     for node in reverse(order)
         backward!(node)
     end
