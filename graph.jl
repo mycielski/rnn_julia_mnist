@@ -133,7 +133,7 @@ forward(::BroadcastedOperator{typeof(*)}, x, y) = return x .* y
 backward(node::BroadcastedOperator{typeof(*)}, x, y, g) = let
     𝟏 = ones(length(node.output))
     Jx = diagm(y .* 𝟏)
-    Jy = diagm(x .* 𝟏)
+    Jy = diagm(vec(x .* 𝟏))
     tuple(Jx' * g, Jy' * g)
 end
 
